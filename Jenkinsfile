@@ -1,37 +1,28 @@
 pipeline {
     agent any
-
-    tools {
-        nodejs 'NodeJS' // Ensure you have a NodeJS tool configured in Jenkins
-    }
-
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/Venkat-267/nodejs-jenkins-trial.git'
-            }
-        }
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-            }
-        }
         stage('Test') {
             steps {
-                sh 'npm test'
-            }
-        }
-        stage('Build') {
-            steps {
-                sh 'npm run build' // Assuming you have a build script, modify as needed
+                sh 'echo "Fail!"; exit 1'
             }
         }
     }
-
     post {
         always {
-            junit 'test-results.xml' // Publish test results
-            archiveArtifacts artifacts: '**/build/**/*.*', allowEmptyArchive: true
+            echo 'This will always run'
+        }
+        success {
+            echo 'This will run only if successful'
+        }
+        failure {
+            echo 'This will run only if failed'
+        }
+        unstable {
+            echo 'This will run only if the run was marked as unstable'
+        }
+        changed {
+            echo 'This will run only if the state of the Pipeline has changed'
+            echo 'For example, if the Pipeline was previously failing but is now successful'
         }
     }
 }
